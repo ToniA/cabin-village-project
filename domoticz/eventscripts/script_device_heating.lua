@@ -1,37 +1,43 @@
--- These are the configuration variables, set them according to your system
-heatingDevice = 'Lämmityksen tila'
+local scriptPath = debug.getinfo(1).source:match("@?(.*/)")
+package.path = package.path .. ';' .. scriptPath .. '?.lua'
+require('settings')
+
 
 commandArray = {}
 
 for key, value in pairs(devicechanged) do
-  if (key == 'Lämmityksen tila') then
-    if (value == 'Normaali') then
-      print("Lämmitys: Normaali")
-      commandArray['Alakerta huone rele'] = 'On'
-      commandArray['Yläkerta huone 1 rele'] = 'On'
-      commandArray['Yläkerta huone 2 rele'] = 'On'
+  if (key == heatingDev) then
+    if (value == normalState) then
+      print(radiatorNormalStateMsg)
+      commandArray[relay1Dev] = 'On'
+      commandArray[relay2Dev] = 'On'
+      commandArray[relay3Dev] = 'On'
+      commandArray[delayDummySwitchDev] = 'On'
     end
-    if (value == 'Normaali viivästetty') then
-      print("Lämmitys: Päälle viiveen jälkeen")
+    if (value == normalStateDelayed) then
+      print(radiatorNormalStateDelayedMsg)
 
-      heatingDelay = uservariables['lämmitysviive']
+      heatingDelay = uservariables[heatingDelayVar]
 
-      commandArray['Alakerta huone rele'] = 'On AFTER ' .. heatingDelay
-      commandArray['Yläkerta huone 1 rele'] = 'On AFTER ' .. heatingDelay
-      commandArray['Yläkerta huone 2 rele'] = 'On AFTER ' .. heatingDelay
+      commandArray[delayDummySwitchDev] = 'On AFTER ' .. heatingDelay
     end
-    if (value == 'Ylläpito') then
-      print("Lämmitys: Ylläpito")
-      commandArray['Alakerta huone rele'] = 'Off'
-      commandArray['Yläkerta huone 1 rele'] = 'Off'
-      commandArray['Yläkerta huone 2 rele'] = 'Off'
+    if (value == maintenanceState) then
+      print(radiatorMaintenanceStateMsg)
+      commandArray[relay1Dev] = 'Off'
+      commandArray[relay2Dev] = 'Off'
+      commandArray[relay3Dev] = 'Off'
+      commandArray[delayDummySwitchDev] = 'Off'
     end
   end
 
-  if (key == 'Alakerta huone rele' and value == 'On' and  otherdevices[heatingDevice] == 'Normaali viivästetty') then
-    commandArray['UpdateDevice'] = otherdevices_idx[heatingDevice] .. '|0|10'
+  -- Turn heating on when the dummy delay switch turns on
+  if (key == delayDummySwitchDev and value == 'On' and otherdevices[heatingDev] == normalStateDelayed) then
+    print(radiatorNormalStateMsg)
+    commandArray['UpdateDevice'] = otherdevices_idx[heatingDev] .. '|0|10'
+    commandArray[relay1Dev] = 'On'
+    commandArray[relay2Dev] = 'On'
+    commandArray[relay3Dev] = 'On'
   end
-
 end
 
 return commandArray

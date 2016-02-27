@@ -1,32 +1,29 @@
--- These are the configuration variables, set them according to your system
-textDev = 'IR data'   -- Idx of the 'IR data' MySensors device
-irSendDev = 'IR send' -- Name of the 'IR send' MySensors device
+local scriptPath = debug.getinfo(1).source:match("@?(.*/)")
+package.path = package.path .. ';' .. scriptPath .. '?.lua'
+require('settings')
 
 
 commandArray = {}
 
 for key, value in pairs(devicechanged) do
-  if (key == 'Ilmalämpöpumpun tila') then
-
-    if (value == 'Normaali') then
-      print("Lämpöpumpun normaalitila")
+  if (key == heatpumpDev) then
+    if (value == normalState) then
+      print(heatpumpNormalStateMsg)
       powerModeCmd = '12'   -- ON + HEAT
-      fanSpeedCmd = 0       -- AUTO
-      temperatureCmd = 22
+      fanSpeedCmd = uservariables[heatpumpNormalFanSpeedVar]
+      temperatureCmd = uservariables[heatpumpNormalTempVar]
     else
-      print("Lämpöpumpun ylläpitotila")
+      print(heatpumpMaintenanceStateMsg)
       powerModeCmd = '16'   -- ON + MAINTENANCE
-      fanSpeedCmd = 5       -- FAN_5 
+      fanSpeedCmd = 5       -- FAN_5
       temperatureCmd = 10   -- 10 degrees
     end
 
-    modelCmd = uservariables['pumppumalli']
+    modelCmd = uservariables[heatpumpModelVar]
+    modeCmd = '00' .. modelCmd .. powerModeCmd .. fanSpeedCmd .. string.format("%02X", temperatureCmd)
 
-    modeCmd = '00' .. modelCmd .. powerModeCmd .. fanSpeedCmd .. string.format("%02x", temperatureCmd)
-
-    commandArray['UpdateDevice'] = otherdevices_idx[textDev] .. '|0|' .. modeCmd 
+    commandArray['UpdateDevice'] = otherdevices_idx[textDev] .. '|0|' .. modeCmd
     commandArray[irSendDev] = 'On'
-
   end
 end
 
