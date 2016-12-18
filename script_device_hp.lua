@@ -14,6 +14,11 @@ for i, apartment_config in ipairs(apartment_configs) do
         powerModeCmd = '1,2'  -- ON + HEAT
         fanSpeedCmd = uservariables[heatpumpNormalFanSpeedVar]
         temperatureCmd = uservariables[heatpumpNormalTempVar]
+      elseif (value == powerfulState) then
+        print(heatpumpNormalStateMsg)
+        powerModeCmd = '1,2'  -- ON + HEAT
+        fanSpeedCmd = 5
+        temperatureCmd = 26
       else
         print(heatpumpMaintenanceStateMsg)
         powerModeCmd = '1,6'  -- ON + MAINTENANCE

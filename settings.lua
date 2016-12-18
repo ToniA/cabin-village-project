@@ -1,12 +1,15 @@
 -- Apartments configuration
 
 apartment_configs = {
-  {apartment = 'A', rooms = {{name = 'alakerta', delayed = 1},
-                             {name = 'yläkerta 1', delayed = 0}, 
-                             {name = 'yläkerta 2', delayed = 0}}},
-  {apartment = 'B', rooms = {{name = 'alakerta', delayed = 1}, 
-                             {name = 'yläkerta 1', delayed = 0}, 
-                             {name = 'yläkerta 2', delayed = 0}}}
+  {apartment = 'C', rooms = {{name = 'alakerta', delayed = 1}}},
+--                             {name = 'yläkerta 1', delayed = 0}, 
+--                             {name = 'yläkerta 2', delayed = 0}}},
+  {apartment = 'D', rooms = {{name = 'alakerta', delayed = 1}}},
+--                             {name = 'yläkerta 1', delayed = 0}, 
+--                             {name = 'yläkerta 2', delayed = 0}}},
+  {apartment = 'E', rooms = {{name = 'alakerta', delayed = 1}}}, 
+--                             {name = 'yläkerta 1', delayed = 0}, 
+--                             {name = 'yläkerta 2', delayed = 0}}}
 }
 
 
@@ -30,9 +33,10 @@ temperatureDev = 'Lämpötila '                    -- Name of the temperature de
 
 -- State names
 
-normalState = 'Normaali'                         -- Name of the 'normal' heating state (heatpump on, radiators on)
+normalState = 'Normaali'                         -- Name of the 'normal' heating state (heatpump on, radiators on with thermostat control)
 normalStateDelayed = 'Normaali viivästetty'      -- Name of the 'delayed normal' heating state (heatpump on, radiators on maintenance)
 maintenanceState = 'Ylläpito'                    -- Name of the 'maintenance' heating state(heatpump & radiators on maintenance)
+powerfulState = 'Tehostettu'                     -- Name of the 'powerful' heating state(heatpump on max & radiators on)
 
 
 -- Variable names
@@ -43,16 +47,20 @@ heatpumpNormalFanSpeedVar = 'ilp puhallus'       -- Name of the heatpump normal 
 heatingDelayVar = 'lämmitysviive'                -- Name of the heating delay variable
 maintenanceTemperatureVar = 'ylläpitolämpö'      -- Name of the maintenance heating (radiators) temperature variable
 maintenanceHysteresisVar = 'ylläpitoraja'        -- Name of the maintenance heating hysteresis variable
+normalTemperatureVar='normaalilämpötila'         -- Name of the normal temperature variable
 
 -- Messages
 
 normalStateMsg = 'Asunto: Normaali lämmitys'
 delayedNormalStateMsg = 'Asunto: Viivästetty lämmitys'
 maintenanceStateMsg = 'Asunto: Ylläpitolämmitys'
+powerfulStateMsg = 'Asunto: Tehostettu lämmitys'
 
 heatpumpNormalStateMsg = 'Lämpöpumppu: Normaalitila'
 heatpumpMaintenanceStateMsg = 'Lämpöpumppu: Ylläpitotila'
+heatpumpPowerfulStateMsg = 'Lämpöpumppu: Tehostettu tila'
 
 radiatorNormalStateMsg = 'Lämpöpatterit: Normaalitila'
 radiatorNormalStateDelayedMsg = 'Lämpöpatterit: Normaalitilaan viiveellä'
 radiatorMaintenanceStateMsg = 'Lämpöpatterit: Ylläpitotila'
+radiatorNormalStateMsg = 'Lämpöpatterit: Tehostettu tila'
