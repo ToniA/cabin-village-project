@@ -1,6 +1,6 @@
 local scriptPath = debug.getinfo(1).source:match("@?(.*/)")
 package.path = package.path .. ';' .. scriptPath .. '?.lua'
-require('config')
+require('config_demo')
 
 -- Apartments configuration
 
