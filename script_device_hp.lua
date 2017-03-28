@@ -10,17 +10,17 @@ for i, apartment_config in ipairs(apartment_configs) do
   for key, value in pairs(devicechanged) do
     if (key == apartment .. ': ' .. heatpumpDev) then
       if (value == normalState) then
-        print(heatpumpNormalStateMsg)
+        print(apartment .. ": " .. heatpumpNormalStateMsg)
         powerModeCmd = '1,2'  -- ON + HEAT
         fanSpeedCmd = uservariables[heatpumpNormalFanSpeedVar]
         temperatureCmd = uservariables[heatpumpNormalTempVar]
       elseif (value == powerfulState) then
-        print(heatpumpNormalStateMsg)
+        print(apartment .. ": " .. heatpumpPowerfulStateMsg)
         powerModeCmd = '1,2'  -- ON + HEAT
-        fanSpeedCmd = 5
-        temperatureCmd = 26
+        fanSpeedCmd = 5       -- FAN_5
+        temperatureCmd = 26   -- 26 degrees
       else
-        print(heatpumpMaintenanceStateMsg)
+        print(apartment .. ": " .. heatpumpMaintenanceStateMsg)
         powerModeCmd = '1,6'  -- ON + MAINTENANCE
         fanSpeedCmd = 5       -- FAN_5
         temperatureCmd = 10   -- 10 degrees
@@ -28,7 +28,7 @@ for i, apartment_config in ipairs(apartment_configs) do
 
       modeCmd = uservariables[apartment .. ': ' .. heatpumpModelVar] .. ',' .. powerModeCmd .. ',' .. fanSpeedCmd .. ',' .. temperatureCmd .. ',0,0'
 
-      commandArray[1] = {['OpenURL'] = 'http://127.0.0.1:8080/json.htm?type=command&param=udevice&idx=' .. otherdevices_idx[apartment .. ': ' .. textDev] .. '&svalue=' .. modeCmd}
+      commandArray['OpenURL'] = 'http://127.0.0.1:8080/json.htm?type=command&param=udevice&idx=' .. otherdevices_idx[apartment .. ': ' .. textDev] .. '&svalue=' .. modeCmd
     end
   end
 end

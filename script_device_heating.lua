@@ -7,11 +7,11 @@ commandArray = {}
 
 for i, apartment_config in pairs(apartment_configs) do
   apartment = apartment_config["apartment"]
-  -- Heating master state switch (normal, delayed, maintenance)
+  -- Heating master state switch (normal, delayed, maintenance, powerful)
   for key, value in pairs(devicechanged) do
     if (key == apartment .. ': ' .. heatingDev) then
       if (value == normalState) then
-        print(radiatorNormalStateMsg)
+        print(apartment .. ": " .. radiatorNormalStateMsg)
         for j, room_config in ipairs(apartment_config["rooms"]) do
           commandArray[apartment .. ': ' .. relayDev .. room_config["name"]] = 'On'
         end
@@ -34,12 +34,19 @@ for i, apartment_config in pairs(apartment_configs) do
         end
         commandArray[apartment .. ': ' .. delayDummySwitchDev] = 'Off'
       end
+      if (value == powerfulState) then
+        print(apartment .. ": " .. radiatorPowerfulStateMsg)
+        for j, room_config in ipairs(apartment_config["rooms"]) do
+          commandArray[apartment .. ': ' .. relayDev .. room_config["name"]] = 'On'
+        end
+        commandArray[apartment .. ': ' .. delayDummySwitchDev] = 'On'
+      end
     end
   
     -- Turn heating on when the dummy delay switch turns on
     if (key == apartment .. ': ' ..delayDummySwitchDev and value == 'On' and otherdevices[apartment .. ': ' ..heatingDev] == normalStateDelayed) then
       print(apartment .. ": " .. radiatorNormalStateMsg)
-      commandArray['UpdateDevice'] = otherdevices_idx[apartment .. ': ' ..heatingDev] .. '|0|10'
+      commandArray['OpenURL'] = 'http://127.0.0.1:8080/json.htm?type=command&param=udevice&idx=' .. otherdevices_idx[apartment .. ': ' .. heatingDev] .. '&svalue=10'
       for j, room_config in ipairs(apartment_config["rooms"]) do
         commandArray[apartment .. ': ' .. relayDev .. room_config["name"]] = 'On'
       end

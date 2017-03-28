@@ -1,3 +1,7 @@
+local scriptPath = debug.getinfo(1).source:match("@?(.*/)")
+package.path = package.path .. ';' .. scriptPath .. '?.lua'
+require('config')
+
 -- Apartments configuration
 
 apartment_configs = {
@@ -63,4 +67,4 @@ heatpumpPowerfulStateMsg = 'Lämpöpumppu: Tehostettu tila'
 radiatorNormalStateMsg = 'Lämpöpatterit: Normaalitila'
 radiatorNormalStateDelayedMsg = 'Lämpöpatterit: Normaalitilaan viiveellä'
 radiatorMaintenanceStateMsg = 'Lämpöpatterit: Ylläpitotila'
-radiatorNormalStateMsg = 'Lämpöpatterit: Tehostettu tila'
+radiatorPowerfulStateMsg = 'Lämpöpatterit: Tehostettu tila'
