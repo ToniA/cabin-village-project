@@ -1,7 +1,17 @@
 local scriptPath = debug.getinfo(1).source:match("@?(.*/)")
 package.path = package.path .. ';' .. scriptPath .. '?.lua'
-require('config_demo')
 
+-- House configuration
+
+houseNameVar = 'talon nimi'
+
+housename = uservariables[houseNameVar]
+require('config_' .. housename)
+
+apartments = {}
+for i, apartment_config in pairs(apartment_configs) do
+  table.insert(apartments, apartment_config["apartment"])
+end
 
 -- Device names
 
