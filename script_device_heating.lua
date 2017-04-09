@@ -10,14 +10,19 @@ for i, apartment_config in pairs(apartment_configs) do
   -- Heating master state switch (normal, delayed, maintenance, powerful)
   for key, value in pairs(devicechanged) do
     if (key == apartment .. ': ' .. heatingDev) then
-      if (value == normalState) then
+      if (value == 'Off') then
+        print(apartment .. ": " .. radiatorOffStateMsg)
+        for j, room_config in ipairs(apartment_config["rooms"]) do
+          commandArray[apartment .. ': ' .. relayDev .. room_config["name"]] = 'Off'
+        end
+        commandArray[apartment .. ': ' .. delayDummySwitchDev] = 'Off'
+      elseif (value == normalState) then
         print(apartment .. ": " .. radiatorNormalStateMsg)
         for j, room_config in ipairs(apartment_config["rooms"]) do
           commandArray[apartment .. ': ' .. relayDev .. room_config["name"]] = 'On'
         end
         commandArray[apartment .. ': ' .. delayDummySwitchDev] = 'On'
-      end
-      if (value == normalStateDelayed) then
+      elseif (value == normalStateDelayed) then
         print(apartment .. ": " .. radiatorNormalStateDelayedMsg)
         for j, room_config in ipairs(apartment_config["rooms"]) do
           if (room_config["delayed"] == 0) then
@@ -26,15 +31,13 @@ for i, apartment_config in pairs(apartment_configs) do
         end 
         heatingDelay = uservariables[apartment .. ": " .. heatingDelayVar]
         commandArray[apartment .. ': ' .. delayDummySwitchDev] = 'On AFTER ' .. heatingDelay
-      end
-      if (value == maintenanceState) then
+      elseif (value == maintenanceState) then
         print(apartment .. ": " .. radiatorMaintenanceStateMsg)
         for j, room_config in ipairs(apartment_config["rooms"]) do 
           commandArray[apartment .. ': ' .. relayDev .. room_config["name"]] = 'Off'
         end
         commandArray[apartment .. ': ' .. delayDummySwitchDev] = 'Off'
-      end
-      if (value == powerfulState) then
+      elseif (value == powerfulState) then
         print(apartment .. ": " .. radiatorPowerfulStateMsg)
         for j, room_config in ipairs(apartment_config["rooms"]) do
           commandArray[apartment .. ': ' .. relayDev .. room_config["name"]] = 'On'

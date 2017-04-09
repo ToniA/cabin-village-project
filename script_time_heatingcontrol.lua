@@ -73,7 +73,7 @@ for i, apartment_config in pairs(apartment_configs) do
       --  commandArray[1] = {['OpenURL'] = 'http://127.0.0.1:8080/json.htm?type=command&param=udevice&idx=' .. otherdevices_idx[apartment .. ': ' .. masterStateDev] .. '&svalue=30'}
       --end
 
-    else
+    elseif (otherdevices[apartment .. ': ' .. heatingDev] == powerfulState) then
       -- 'Powerful' state, all radiators on all the time, only limited by their own thermostat control
       -- * Turn apartment to 'normal' state once temperature has reached the 'normal' temperature on any room
 
@@ -89,6 +89,13 @@ for i, apartment_config in pairs(apartment_configs) do
       if (otherdevices_temperature[apartment .. ': ' .. temperatureDev .. room_config["name"]] > normalTemperature) then
         commandArray[1] = {['OpenURL'] = 'http://127.0.0.1:8080/json.htm?type=command&param=udevice&idx=' .. otherdevices_idx[apartment .. ': ' .. heatingDev] .. '&svalue=10'}
         commandArray[2] = {['OpenURL'] = 'http://127.0.0.1:8080/json.htm?type=command&param=udevice&idx=' .. otherdevices_idx[apartment .. ': ' .. masterStateDev] .. '&svalue=10'}
+      end
+    elseif (otherdevices[apartment .. ': ' .. heatingDev] == 'Off') then
+      currentState = otherdevices[apartment .. ': ' .. relayDev .. room_config["name"]]
+      if (currentState == 'Off') then
+        os.execute('mosquitto_pub -t domoticz/out -m \'{"idx": ' .. otherdevices_idx[apartment .. ': ' .. relayDev .. room_config["name"]] .. ', "nvalue": 0}\'')
+      else
+        commandArray[apartment .. ': ' .. relayDev .. room_config["name"]] = 'Off'
       end
     end
   end

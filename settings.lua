@@ -45,15 +45,19 @@ normalTemperatureVar='normaalilämpötila'         -- Name of the normal tempera
 
 -- Messages
 
+offStateMsg = 'Asunto: Lämmitys pois päältä'
 normalStateMsg = 'Asunto: Normaali lämmitys'
 delayedNormalStateMsg = 'Asunto: Viivästetty lämmitys'
 maintenanceStateMsg = 'Asunto: Ylläpitolämmitys'
 powerfulStateMsg = 'Asunto: Tehostettu lämmitys'
 
+heatpumpOffStateMsg = 'Lämpöpumppu: Pois päältä'
 heatpumpNormalStateMsg = 'Lämpöpumppu: Normaalitila'
 heatpumpMaintenanceStateMsg = 'Lämpöpumppu: Ylläpitotila'
 heatpumpPowerfulStateMsg = 'Lämpöpumppu: Tehostettu tila'
+heatpumpResendMsg = 'Lämpöpumppu: Komennon uudelleenlähetys'
 
+radiatorOffStateMsg = 'Lämpöpatterit: Pois päältä'
 radiatorNormalStateMsg = 'Lämpöpatterit: Normaalitila'
 radiatorNormalStateDelayedMsg = 'Lämpöpatterit: Normaalitilaan viiveellä'
 radiatorMaintenanceStateMsg = 'Lämpöpatterit: Ylläpitotila'

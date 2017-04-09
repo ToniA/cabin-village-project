@@ -9,11 +9,16 @@ for i, apartment_config in ipairs(apartment_configs) do
   apartment = apartment_config["apartment"]
   for key, value in pairs(devicechanged) do
     if (key == apartment .. ': ' .. heatpumpDev) then
-      if (value == normalState) then
+      if (value == 'Off') then
+        print(apartment .. ": " .. heatpumpOffStateMsg)
+        powerModeCmd = '0,2'  -- OFF + HEAT
+        fanSpeedCmd = uservariables[heatpumpNormalFanSpeedVar]
+        temperatureCmd = uservariables[apartment .. ": " .. heatpumpNormalTempVar]
+      elseif (value == normalState) then
         print(apartment .. ": " .. heatpumpNormalStateMsg)
         powerModeCmd = '1,2'  -- ON + HEAT
         fanSpeedCmd = uservariables[heatpumpNormalFanSpeedVar]
-        temperatureCmd = uservariables[heatpumpNormalTempVar]
+        temperatureCmd = uservariables[apartment .. ": " .. heatpumpNormalTempVar]
       elseif (value == powerfulState) then
         print(apartment .. ": " .. heatpumpPowerfulStateMsg)
         powerModeCmd = '1,2'  -- ON + HEAT
