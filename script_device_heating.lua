@@ -19,7 +19,11 @@ for i, apartment_config in pairs(apartment_configs) do
       elseif (value == normalState) then
         print(apartment .. ": " .. radiatorNormalStateMsg)
         for j, room_config in ipairs(apartment_config["rooms"]) do
-          commandArray[apartment .. ': ' .. relayDev .. room_config["name"]] = 'On'
+          if (room_config["delayed"] == 1) then
+            commandArray[apartment .. ': ' .. relayDev .. room_config["name"]] = 'Off'
+          else
+            commandArray[apartment .. ': ' .. relayDev .. room_config["name"]] = 'On'
+          end
         end
         commandArray[apartment .. ': ' .. delayDummySwitchDev] = 'On'
       elseif (value == normalStateDelayed) then
