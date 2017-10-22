@@ -74,9 +74,8 @@ for i, apartment_config in pairs(apartment_configs) do
 
       newStateId = newState == 'On' and 1 or 0
       os.execute('mosquitto_pub -t domoticz/out -m \'{"idx": ' .. otherdevices_idx[apartment .. ': ' .. relayDev .. room_config["name"]] .. ', "nvalue": ' .. newStateId .. '}\'')
-    elseif (otherdevices[apartment .. ': ' .. heatingDev] == normalState or
-             ((room_config["delayed"] == 0) and
-               otherdevices[apartment .. ': ' .. heatingDev] == normalStateDelayed)) then
+    elseif ((room_config["delayed"] == 0) and 
+            ((otherdevices[apartment .. ': ' .. heatingDev] == normalState) or (otherdevices[apartment .. ': ' .. heatingDev] == normalStateDelayed))) then
       -- 'Normal' state, thermostat control around 'normalTemperatureVar'
       -- * or non-delayed radiator in delayed state
 
