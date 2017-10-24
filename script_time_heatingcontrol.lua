@@ -119,7 +119,7 @@ for i, apartment_config in pairs(apartment_configs) do
         commandArray[apartment .. ': ' .. relayDev .. room_config["name"]] = 'On'
       end
 
-      if (otherdevices_temperature[apartment .. ': ' .. temperatureDev .. room_config["name"]] > normalTemperature) then
+      if (room_config["powerfulTrigger"] == 1 and otherdevices_temperature[apartment .. ': ' .. temperatureDev .. room_config["name"]] > normalTemperature) then
         commandArray[1] = {['OpenURL'] = 'http://127.0.0.1:8080/json.htm?type=command&param=udevice&idx=' .. otherdevices_idx[apartment .. ': ' .. heatingDev] .. '&svalue=10'}
         commandArray[2] = {['OpenURL'] = 'http://127.0.0.1:8080/json.htm?type=command&param=udevice&idx=' .. otherdevices_idx[apartment .. ': ' .. masterStateDev] .. '&svalue=10'}
       end
