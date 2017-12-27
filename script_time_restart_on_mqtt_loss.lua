@@ -32,7 +32,7 @@ for i, apartment_config in pairs(apartment_configs) do
     -- print('device: ' .. apartment .. ': ' .. temperatureDev .. room_config["name"])
     -- print('last updated: ' .. lastUpdateSeconds)
     
-    if lastUpdateSeconds < 120 then
+    if lastUpdateSeconds < 300 then
       restart = 0
     end
   end
