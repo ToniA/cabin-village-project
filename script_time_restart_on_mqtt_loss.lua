@@ -18,7 +18,7 @@ os.remove(n)
 
 UptimeInSeconds = tonumber(UptimeInSeconds);
 -- print('Domoticz has been running for ' .. UptimeInSeconds .. ' seconds')
-if UptimeInSeconds < 600 then
+if UptimeInSeconds < 900 then
   restart = 0
 end
 
@@ -32,7 +32,7 @@ for i, apartment_config in pairs(apartment_configs) do
     -- print('device: ' .. apartment .. ': ' .. temperatureDev .. room_config["name"])
     -- print('last updated: ' .. lastUpdateSeconds)
     
-    if lastUpdateSeconds < 300 then
+    if lastUpdateSeconds < 600 then
       restart = 0
     end
   end
