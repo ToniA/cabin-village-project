@@ -14,6 +14,7 @@ commandArray = {}
 for i, apartment_config in pairs(apartment_configs) do
   apartment = apartment_config["apartment"]
   for j, room_config in ipairs(apartment_config["rooms"]) do
+    roomTemperature = otherdevices_temperature[apartment .. ': ' .. temperatureDev .. room_config["name"]]
     if (otherdevices[apartment .. ': ' .. heatingDev] == maintenanceState or
          ((room_config["delayed"] == 1) and
            otherdevices[apartment .. ': ' .. heatingDev] == normalStateDelayed)) then
@@ -25,9 +26,9 @@ for i, apartment_config in pairs(apartment_configs) do
 
       currentState = otherdevices[apartment .. ': ' .. relayDev .. room_config["name"]]
 
-      if (otherdevices_temperature[apartment .. ': ' .. temperatureDev .. room_config["name"]] > maintenanceTemperature + hysteresis) then
+      if (roomTemperature > maintenanceTemperature + hysteresis) then
         newState = 'Off'
-      elseif (otherdevices_temperature[apartment .. ': ' .. temperatureDev .. room_config["name"]] < maintenanceTemperature - hysteresis) then
+      elseif (roomTemperature < maintenanceTemperature - hysteresis) then
         newState = 'On'
       else
         newState = currentState
@@ -54,21 +55,41 @@ for i, apartment_config in pairs(apartment_configs) do
 
       currentState = otherdevices[apartment .. ': ' .. relayDev .. room_config["name"]]
 
-      if (currentState == 'Off') then
-        if (otherdevices_temperature[apartment .. ': ' .. temperatureDev .. room_config["name"]] > maintenanceTemperature + hysteresis) then
-          newState = 'Off'
-        elseif (otherdevices_temperature[apartment .. ': ' .. temperatureDev .. room_config["name"]] < maintenanceTemperature - hysteresis) then
-          newState = 'On'
+      delayedTemperatureLowLimit = 16
+      delayedTemperatureHighLimit = 19
+      variableName = apartment .. ':' .. relayDev .. room_config["name"]
+      variableNameEncoded = domoticz_functions.url_encode(variableName)
+      secondsSinceStateChange = domoticz_functions.timedifference(otherdevices_lastupdate[apartment .. ': ' .. masterStateDev])
+
+      if (secondsSinceStateChange > 12*3600 and roomTemperature < delayedTemperatureLowLimit) then
+        newState = 'On'
+        if (uservariables[variableName] == nil) then
+          commandArray[#commandArray +1] = {['OpenURL'] = 'http://127.0.0.1:8080/json.htm?type=command&param=saveuservariable&vname=' .. variableNameEncoded .. '&vtype=0&vvalue=1'}
         else
-          newState = currentState
+          commandArray[#commandArray +1] = {['OpenURL'] = 'http://127.0.0.1:8080/json.htm?type=command&param=updateuservariable&vname=' .. variableNameEncoded .. '&vtype=0&vvalue=1'}
         end
+
+      elseif (secondsSinceStateChange > 12*3600 and uservariables[variableName] == 1 and roomTemperature < delayedTemperatureHighLimit) then
+        newState = 'On'
       else
-        if (otherdevices_temperature[apartment .. ': ' .. temperatureDev .. room_config["name"]] > normalTemperature + 0.5) then
-          newState = 'Off'
-        elseif (otherdevices_temperature[apartment .. ': ' .. temperatureDev .. room_config["name"]] < normalTemperature - 0.5) then
-          newState = 'On'
+        commandArray[#commandArray +1] = {['OpenURL'] = 'http://127.0.0.1:8080/json.htm?type=command&param=updateuservariable&vname=' .. variableNameEncoded .. '&vtype=0&vvalue=0'}
+
+        if (currentState == 'Off') then
+          if (roomTemperature > maintenanceTemperature + hysteresis) then
+            newState = 'Off'
+          elseif (roomTemperature < maintenanceTemperature - hysteresis) then
+            newState = 'On'
+          else
+            newState = currentState
+          end
         else
-          newState = currentState
+          if (roomTemperature > normalTemperature + 0.5) then
+            newState = 'Off'
+          elseif (roomTemperature < normalTemperature - 0.5) then
+            newState = 'On'
+          else
+            newState = currentState
+          end
         end
       end
 
@@ -84,9 +105,9 @@ for i, apartment_config in pairs(apartment_configs) do
 
       currentState = otherdevices[apartment .. ': ' .. relayDev .. room_config["name"]]
 
-      if (otherdevices_temperature[apartment .. ': ' .. temperatureDev .. room_config["name"]] > normalTemperature + 0.5) then
+      if (roomTemperature > normalTemperature + 0.5) then
         newState = 'Off'
-      elseif (otherdevices_temperature[apartment .. ': ' .. temperatureDev .. room_config["name"]] < normalTemperature - 0.5) then
+      elseif (roomTemperature < normalTemperature - 0.5) then
         newState = 'On'
       else
         newState = currentState
@@ -119,9 +140,9 @@ for i, apartment_config in pairs(apartment_configs) do
         commandArray[apartment .. ': ' .. relayDev .. room_config["name"]] = 'On'
       end
 
-      if (room_config["powerfulTrigger"] == 1 and otherdevices_temperature[apartment .. ': ' .. temperatureDev .. room_config["name"]] > normalTemperature) then
-        commandArray[1] = {['OpenURL'] = 'http://127.0.0.1:8080/json.htm?type=command&param=udevice&idx=' .. otherdevices_idx[apartment .. ': ' .. heatingDev] .. '&svalue=10'}
-        commandArray[2] = {['OpenURL'] = 'http://127.0.0.1:8080/json.htm?type=command&param=udevice&idx=' .. otherdevices_idx[apartment .. ': ' .. masterStateDev] .. '&svalue=10'}
+      if (room_config["powerfulTrigger"] == 1 and roomTemperature > normalTemperature) then
+        commandArray[#commandArray +1] = {['OpenURL'] = 'http://127.0.0.1:8080/json.htm?type=command&param=udevice&idx=' .. otherdevices_idx[apartment .. ': ' .. heatingDev] .. '&svalue=10'}
+        commandArray[#commandArray +1] = {['OpenURL'] = 'http://127.0.0.1:8080/json.htm?type=command&param=udevice&idx=' .. otherdevices_idx[apartment .. ': ' .. masterStateDev] .. '&svalue=10'}
       end
     elseif (otherdevices[apartment .. ': ' .. heatingDev] == 'Off') then
       currentState = otherdevices[apartment .. ': ' .. relayDev .. room_config["name"]]
