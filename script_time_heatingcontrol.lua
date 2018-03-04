@@ -55,8 +55,6 @@ for i, apartment_config in pairs(apartment_configs) do
 
       currentState = otherdevices[apartment .. ': ' .. relayDev .. room_config["name"]]
 
-      delayedTemperatureLowLimit = 14
-      delayedTemperatureHighLimit = 17
       variableName = apartment .. ':' .. relayDev .. room_config["name"]
       variableNameEncoded = domoticz_functions.url_encode(variableName)
       secondsSinceStateChange = domoticz_functions.timedifference(otherdevices_lastupdate[apartment .. ': ' .. masterStateDev])
